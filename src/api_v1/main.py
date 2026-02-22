@@ -1,41 +1,33 @@
 """The main FastAPI application."""
 
-# pylint: disable=missing-function-docstring
-
 import logging
-from typing import Annotated
+from fastapi import FastAPI
 
-from fastapi import FastAPI, HTTPException, Header, Path, Query
-from pydantic import BaseModel
 import uvicorn
 
-from models.house import House, my_houses
+
+from server.database import init_db
+from routes.house import router as HouseRouter
+
 
 logger = logging.getLogger(__name__)
 
 app = FastAPI()
+app.include_router(HouseRouter, tags=["Houses"], prefix="/houses")
+
+
+# deprecated! learn and switch to lifespan events in the future
+@app.on_event("startup")
+async def start_db():
+    """Initialize the database connection on startup."""
+    await init_db()
 
 
 @app.get("/")
 def root():
-    """hello world"""
-    return {"message": "Hello World"}
-
-
-@app.get("/houses")
-def list_houses() -> list[House]:
-    return []
-
-
-@app.get("/houses/{house_id}")
-def get_house(
-    house_id: Annotated[int, Path(title="The ID of the item to get", ge=0, le=1000)],
-) -> House:
-    try:
-        return my_houses[house_id]
-    except KeyError as exc:
-        raise HTTPException(status_code=404, detail="Item not found") from exc
+    """Welcome message for the API"""
+    return {"message": "Welcome to the bnb homes API!"}
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=8000, reload=True)

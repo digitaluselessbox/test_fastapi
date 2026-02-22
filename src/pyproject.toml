@@ -7,12 +7,14 @@ name = "test_fastapi"
 version = "0.1.0"
 description = "A FastAPI project"
 authors = [
-    { name = "Simon Evers", email = "simon.evers@gmx.de" }
+    { name = "Simon Evers", email = "simon.evers@gmx.de" },
+    { name = "Michael Klippel", email = "michael_klippel@web.de" }
 ]
 dependencies = [
     "fastapi[standard]==0.120.3",
     "pydantic==2.12.3",
     "uvicorn>=0.22.0",
+	"beanie==2.0.1"
 ]
 
 [project.optional-dependencies]

@@ -8,3 +8,22 @@ services:
     ports:
       - "8000:8000"
     command: uvicorn main:app --host 0.0.0.0 --port 8000
+    environment:
+      - MONGO_URI=mongodb://admin:adminpass@mongodb:27017/?authSource=admin
+      - MONGO_DB_NAME=bnb
+    depends_on:
+      - mongodb
+
+  mongodb:
+    image: mongo:8.0
+    restart: unless-stopped
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=adminpass
+    ports:
+      - "27117:27017"
+    volumes:
+      - mongo_data:/data/db
+
+volumes:
+  mongo_data:
